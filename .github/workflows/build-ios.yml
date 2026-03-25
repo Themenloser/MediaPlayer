@@ -33,9 +33,11 @@ jobs:
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       run: |
-        echo "$EXPO_TOKEN" | npx eas login
+        echo "Using EXPO_TOKEN for authentication"
         
     - name: Build iOS IPA
+      env:
+        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       run: |
         npx eas build --platform ios --profile development
         
