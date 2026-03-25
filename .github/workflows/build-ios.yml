@@ -2,49 +2,49 @@ name: Build iOS IPA
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: |
-        npm ci
-        
-    - name: Setup Expo CLI
-      run: |
-        npm install -g @expo/cli eas-cli
-        npx expo --version
-        npx eas --version
-        
-    - name: Authenticate with Expo
-      env:
-        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-      run: |
-        echo "Using EXPO_TOKEN for authentication"
-        
-    - name: Build iOS IPA
-      env:
-        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-      run: |
-        npx eas build --platform ios --profile development
-        
-    - name: Upload IPA Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ios-ipa
-        path: "*.ipa"
-        retention-days: 30
-        if-no-files-found: warn
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build iOS IPA locally
+        run: |
+          npx eas build --local \
+            --platform ios \
+            --profile development \
+            --output ./build \
+            --non-interactive
+
+      - name: Find IPA file
+        run: |
+          find ./build -name "*.ipa" -type f
+          ls -la ./build/
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: build/*.ipa
+          retention-days: 30
+          if-no-files-found: warn
