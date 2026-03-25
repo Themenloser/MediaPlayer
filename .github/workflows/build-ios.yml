@@ -35,17 +35,17 @@ jobs:
       - name: Build iOS IPA locally
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_LOCAL_BUILD_ARTIFACTS_DIR: ${{ github.workspace }}/build
         run: |
           eas build --local \
             --platform ios \
             --profile development \
-            --output ./build \
             --non-interactive
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
-          path: ./build/*.ipa
+          path: build/*
           retention-days: 30
           if-no-files-found: error
