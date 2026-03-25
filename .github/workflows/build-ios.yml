@@ -34,7 +34,7 @@ jobs:
 
       - name: Build iOS IPA locally
         env:
-          EXPO_TOKEN: ${{ hPQUZeg1cEzz5us_6GXKm689D3Tix_K2w6CSj66Z }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           eas build --local \
             --platform ios \
