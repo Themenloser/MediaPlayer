@@ -37,6 +37,12 @@
     "experiments": {
       "typedRoutes": true
     },
-    "owner": "your-github-username"
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7fec4dfa-fcff-478d-8c54-13473288b0b7"
+      }
+    },
+    "owner": "ameti"
   }
 }
