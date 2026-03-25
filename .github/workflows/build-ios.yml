@@ -26,18 +26,18 @@ jobs:
     - name: Setup Expo CLI
       run: |
         npm install -g @expo/cli eas-cli
-        expo --version
-        eas --version
+        npx expo --version
+        npx eas --version
         
     - name: Authenticate with Expo
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       run: |
-        echo "$EXPO_TOKEN" | eas login --non-interactive
+        echo "$EXPO_TOKEN" | npx eas login --non-interactive
         
     - name: Build iOS IPA
       run: |
-        eas build --platform ios --profile development --non-interactive
+        npx eas build --platform ios --profile development --non-interactive
         
     - name: Upload IPA Artifact
       uses: actions/upload-artifact@v4
