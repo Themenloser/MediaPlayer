@@ -33,11 +33,11 @@ jobs:
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       run: |
-        echo "$EXPO_TOKEN" | npx eas login --non-interactive
+        echo "$EXPO_TOKEN" | npx eas login
         
     - name: Build iOS IPA
       run: |
-        npx eas build --platform ios --profile development --non-interactive
+        npx eas build --platform ios --profile development
         
     - name: Upload IPA Artifact
       uses: actions/upload-artifact@v4
