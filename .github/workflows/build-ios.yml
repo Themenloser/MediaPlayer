@@ -7,19 +7,18 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
-    env:
-      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-    
+    runs-on: macos-26
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'npm'
+          package-manager-cache: false
 
       - name: Install dependencies
         run: npm ci
@@ -27,7 +26,15 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
+      - name: Verify EAS
+        run: |
+          eas --version
+          node --version
+          npm --version
+
       - name: Build iOS IPA locally
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           eas build --local \
             --platform ios \
@@ -35,15 +42,10 @@ jobs:
             --output ./build \
             --non-interactive
 
-      - name: Find IPA file
-        run: |
-          find ./build -name "*.ipa" -type f
-          ls -la ./build/
-
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
-          path: build/*.ipa
+          path: ./build/*.ipa
           retention-days: 30
-          if-no-files-found: warn
+          if-no-files-found: error
